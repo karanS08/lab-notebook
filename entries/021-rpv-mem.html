@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entry 021: RPV-Mem: a robot that remembers what it wasn&#x27;t looking for · Karan&#x27;s Lab Notebook</title>
+<meta name="description" content="You remember the pen, even though you never meant to.">
+<link rel="preload" href="../fonts/caveat-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/notebook.css">
+<script src="../js/sound.js" defer></script>
+<script src="../js/notebook.js" defer></script>
+<script>/* with JS on a web server, open this entry inside the book (add ?plain to stay here) */
+if (location.protocol !== "file:" && !/[?&]plain/.test(location.search)) location.replace("../index.html#entry-021");
+</script>
+</head>
+<body>
+<a class="skip" href="#entry">Skip to entry</a>
+<main class="sheet">
+<p class="crumb"><a href="../index.html#contents">&larr; contents</a></p>
+<nav class="strip" data-strip hidden aria-label="All entries"></nav>
+<article id="entry">
+<p class="date">2026</p>
+<h1>Entry 021: RPV-Mem: a robot that remembers what it wasn&#x27;t looking for</h1>
+<dl class="log">
+<div><dt>When</dt><dd>began right after my first semester. About 3 months: roughly 2.5 building and 0.5 writing.</dd></div>
+<div><dt>With</dt><dd>Gavin Paul and his PhD student Adam Scicluna, UTS</dd></div>
+<div><dt>Target</dt><dd>ACRA 2026, Canberra</dd></div>
+</dl>
+<p><b>The human question:</b> you search a table for your wallet and see a hundred things, including a pen. Later someone asks, &ldquo;did you see a pen?&rdquo; You remember it, even though you never meant to.</p>
+<div class="sketch" data-sketch="pen" data-label="Pencil sketch of a table with a wallet, a cup, a book and a pen. Find the wallet, then say where the pen was after the objects disappear. The remembered outlines fade over time.">
+<img class="fallback" src="../img/doodles/pen-table.svg" alt="Pencil sketch of a table with a wallet, a cup, a book and a pen" width="300" height="240">
+<p class="caption">try it: find the wallet.</p>
+</div>
+<p>You also trust memories differently over time. Where a static object was a moment ago, you trust. Where it was a month ago, much less. For objects that move, the window is different again.</p>
+<p><b>The idea:</b> VLMs can see and understand a scene. So why not make the VLM the robot's brain, the top-level moderator that decides what to do, instead of stacking complex algorithms?</p>
+<p><b>How it started:</b> nobody asked me to do this. I wrote a detailed proposal and sent it to my Robotics Studio tutor. He had me send it formally and forwarded it to the professors. Gavin Paul replied and asked to meet the next day. I made the slides that night. He offered some funding, and I wanted a journal paper. He said to start slower and aim for ACRA.</p>
+<aside class="margin-note">nobody asked me to do this.</aside>
+<p><b>Approach:</b> I read the literature and found DAAAM, from MIT SPARK Lab. Anything I built had to sit on top of it. But building on it alone wasn't viable, so I designed my own verification gates.</p>
+<p><b>The gates:</b> every memory has a temporal decay value, with tunable weights. The robot only acts on a memory when it's confident the memory is still true.</p>
+<p><b>Status:</b> a proof of concept in simulation, and publication-ready. It hasn't been tested on a real robot yet.</p>
+<p><b>Next:</b> a real robot.</p>
+</article>
+
+<footer class="page-foot">
+<span class="pageno">page 23 of 23</span>
+<nav aria-label="Turn the page"><a href="020-space-robotics.html" rel="prev">&larr; previous page</a> <a href="../index.html#contents">back to contents</a> <span class="dim">next page: not written yet</span></nav>
+</footer>
+</main>
+</body>
+</html>

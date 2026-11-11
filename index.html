@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karan's Lab Notebook</title>
+<meta name="description" content="Not a CV. A log of things I built, how I thought, what broke, what I learned.">
+<meta name="theme-color" content="#24211d">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Karan's Lab Notebook">
+<meta property="og:description" content="Not a CV. A log of things I built, how I thought, what broke, what I learned.">
+<meta property="og:image" content="img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="fonts/caveat-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/notebook.css">
+<script src="js/sound.js" defer></script>
+<script src="js/notebook.js" defer></script>
+<link rel="preload" href="fonts/anton-latin.woff2" as="font" type="font/woff2" crossorigin>
+<script>/* JS on: read it as a book. Reduced motion: skip the intro, no flips. */
+document.documentElement.classList.add("book-on");
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("still");
+</script>
+<link rel="stylesheet" href="css/desk.css">
+<link rel="modulepreload" href="js/vendor/three-r169-9d8a0bf2.min.js">
+<script src="js/desk.js" defer></script>
+<script src="js/book.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#contents">Skip to contents</a>
+<!-- ENTRY DATES (edit here, in js/notebook.js ENTRIES, and on the entry page)
+  000  Childhood                  000-toys.html
+  001  November 2017              001-hot-glue-arm.html
+  002  around 2018                002-workshop-car.html
+  003  early college              003-reading-errors.html
+  004  October 2020               004-class-bot.html
+  005  second year                005-arm-revisited.html
+  006  third year, sem 1          006-cansat.html
+  007  third year, sem 2          007-taiwan.html
+  008  Taiwan                     008-fist-drone.html
+  009  final undergrad project    009-tiny-satellite.html
+  010  Plaksha                    010-teaching-80.html
+  011  Plaksha                    011-self-balancing.html
+  012  Plaksha                    012-cart-pole.html
+  013  Plaksha                    013-blimps.html
+  014  Plaksha                    014-glider.html
+  015  Plaksha                    015-sugarcane-lasers.html
+  016  Plaksha RA                 016-sugarcane-gaps.html
+  017  26 February                017-sydney.html
+  018  UTS                        018-pepper.html
+  019  UTS                        019-auv-7.html
+  020  UTS                        020-space-robotics.html
+  021  2026                       021-rpv-mem.html
+-->
+<div class="intro" id="intro" aria-hidden="true">
+<div class="intro-stage">
+<i class="bar top"></i><i class="bar bot"></i>
+<div class="cam"><div class="book">
+<div class="board"></div>
+<div class="edge edge-r"></div><div class="edge edge-b"></div><div class="edge edge-t"></div>
+<div class="leaf slot-r"></div>
+<div class="slot-l"></div>
+<div class="flipper"><div class="face front"></div><div class="face back"></div></div>
+<div class="bcover">
+<div class="cover-front">
+<div class="spine"></div>
+<div class="label"><span class="l1">Karan's</span><span class="l2">Lab Notebook</span><span class="l3">vol. 1 &middot; 2017 &ndash; now</span></div>
+<span class="stamp">DO NOT LOSE</span>
+<span class="sticker bot"><img src="img/doodles/robot.svg" alt=""></span>
+<span class="sticker warn">HOT GLUE<br>INSIDE</span>
+</div>
+<div class="cover-inside"><p>property of Karan<br>if found, please return to<br>0802karans@gmail.com</p></div>
+</div>
+</div></div>
+<div class="card"><p class="card-kicker">22 entries. everything that broke.</p><p class="card-title">Karan's<br><span>Lab Notebook</span></p></div>
+<p class="hint">click the notebook to open <span>&#8598;</span></p>
+<p class="tip"><b>TIP</b><span>Hot glue is not a structural material.</span></p>
+</div>
+</div>
+<a class="skip-intro" href="#cover">SKIP INTRO</a>
+<nav class="reader-bar" aria-label="Turn pages"><button type="button" class="prev" aria-label="Previous page">&larr;</button><button type="button" class="toc">contents</button><span class="count" aria-live="polite"></span><button type="button" class="next" aria-label="Next page">&rarr;</button></nav>
+<main class="sheet cover" id="cover" tabindex="-1">
+<p class="date">2017 &ndash; now</p>
+<h1 class="cover-title">Karan's Lab Notebook</h1>
+<p class="cover-sub">Not a CV. A log of things I built, how I thought, what broke, what I learned.</p>
+<p class="cover-note">Early entries built before ChatGPT. Every bug was read, not prompted.</p>
+<div class="sketch" data-sketch="arm" data-label="Pencil sketch of the hot-glue arm. It turns to point at your cursor or finger.">
+<img class="fallback" src="img/doodles/arm.svg" alt="Pencil sketch of the hot-glue arm: two stacked servos, ruler links and an ice-cream-stick gripper" width="300" height="300">
+<p class="caption">it still follows people around</p>
+</div>
+<p class="owner hand">property of: Karan &middot; robotics, UTS Sydney</p>
+<p class="links"><a href="https://github.com/karanS08">GitHub: karanS08</a> &middot; <a href="mailto:0802karans@gmail.com">0802karans@gmail.com</a> &middot; papers: arXiv and ACRA 2026, links once they're out</p>
+<nav id="contents" aria-label="Contents">
+<h2 class="part">Part One: Tinkering</h2>
+<ol class="timeline">
+  <li class="gap-2"><span class="when">Childhood</span><a class="what" href="entries/000-toys.html">000 &middot; The kid who broke every toy</a><br><span class="hook">I&#x27;d play with it for two days, then break it open to get to the motors.</span></li>
+  <li><time class="when" datetime="2017-11">November 2017</time><a class="what" href="entries/001-hot-glue-arm.html">001 &middot; The hot-glue arm</a><br><span class="hook">Hot glue is not a structural material.</span></li>
+  <li><span class="when">around 2018</span><a class="what" href="entries/002-workshop-car.html">002 &middot; The workshop car (brief)</a><br><span class="hook">It followed instructions, nothing more.</span></li>
+  <li><span class="when">early college</span><a class="what" href="entries/003-reading-errors.html">003 &middot; I learned to read errors before I learned to write code</a><br><span class="hook">Everyone around me was learning to code. I was learning to debug.</span></li>
+  <li><time class="when" datetime="2020-10">October 2020</time><a class="what" href="entries/004-class-bot.html">004 &middot; The bot that attended my classes</a><br><span class="hook">Fixed it? No. The pandemic beat me to it.</span></li>
+  <li><span class="when">second year</span><a class="what" href="entries/005-arm-revisited.html">005 &middot; Revisiting the hot-glue arm</a><br><span class="hook">₹500 and hot glue, compared with ₹5,000 and metal gears.</span></li>
+  <li class="gap-1"><span class="when">third year, sem 1</span><a class="what" href="entries/006-cansat.html">006 &middot; CanSat, or how systems get built</a><br><span class="hook">How ten people&#x27;s pieces fit together into one system.</span></li>
+</ol>
+<h2 class="part">Part Two: Research</h2>
+<ol class="timeline">
+  <li><span class="when">third year, sem 2</span><a class="what" href="entries/007-taiwan.html">007 &middot; Taiwan</a><br><span class="hook">This is where my brain opened up.</span></li>
+  <li><span class="when">Taiwan</span><a class="what" href="entries/008-fist-drone.html">008 &middot; A drone that lands when I make a fist</a><br><span class="hook">Making a fist made it land. Opening my hand made it take off.</span></li>
+  <li class="gap-1"><span class="when">final undergrad project</span><a class="what" href="entries/009-tiny-satellite.html">009 &middot; A tiny satellite and a lying IMU</a><br><span class="hook">Cheap sensors lie. Math makes them honest.</span></li>
+</ol>
+<h2 class="part">Part Three: Plaksha</h2>
+<ol class="timeline">
+  <li><span class="when">Plaksha</span><a class="what" href="entries/010-teaching-80.html">010 &middot; Teaching 80 people to build a robot</a><br><span class="hook">The maps were a mess. It was a great learning experience.</span></li>
+  <li><span class="when">Plaksha</span><a class="what" href="entries/011-self-balancing.html">011 &middot; Self-balancing robots, and why math matters</a><br><span class="hook">This is when I realised math isn&#x27;t optional.</span></li>
+  <li><span class="when">Plaksha</span><a class="what" href="entries/012-cart-pole.html">012 &middot; A cart-pole that balances like a person</a><br><span class="hook">Picking the right actuator for the size of the problem.</span></li>
+  <li><span class="when">Plaksha</span><a class="what" href="entries/013-blimps.html">013 &middot; Blimps from bin bags</a><br><span class="hook">Hot-air balloons out of plastic bags. Everything was hands-on.</span></li>
+  <li><span class="when">Plaksha</span><a class="what" href="entries/014-glider.html">014 &middot; Redesigning a glider for 100 kids</a><br><span class="hook">Quick to make, repeatable, and it flew.</span></li>
+  <li><span class="when">Plaksha</span><a class="what" href="entries/015-sugarcane-lasers.html">015 &middot; Lasers in sugarcane juice</a><br><span class="hook">Measuring the sucrose in juice by passing a laser through it.</span></li>
+  <li class="gap-1"><span class="when">Plaksha RA</span><a class="what" href="entries/016-sugarcane-gaps.html">016 &middot; Finding the gaps in a sugarcane field</a><br><span class="hook">A farmer can open the result on a phone and walk to the spot.</span></li>
+</ol>
+<h2 class="part">Part Four: Sydney</h2>
+<ol class="timeline">
+  <li><time class="when" datetime="--02-26">26 February</time><a class="what" href="entries/017-sydney.html">017 &middot; Sydney</a><br><span class="hook">I gave up my job and moved to Sydney.</span></li>
+  <li><span class="when">UTS</span><a class="what" href="entries/018-pepper.html">018 &middot; Pepper, and where the memory idea started</a><br><span class="hook">Why can&#x27;t a robot remember like we do?</span></li>
+  <li><span class="when">UTS</span><a class="what" href="entries/019-auv-7.html">019 &middot; The capstone, underwater</a><br><span class="hook">The cart-pole idea from Entry 012 again, just wetter.</span></li>
+  <li><span class="when">UTS</span><a class="what" href="entries/020-space-robotics.html">020 &middot; Space Robotics</a><br><span class="hook">If you can&#x27;t do the first assignment, change courses. Exactly what I wanted.</span></li>
+  <li><span class="when">2026</span><a class="what" href="entries/021-rpv-mem.html">021 &middot; RPV-Mem: a robot that remembers what it wasn&#x27;t looking for</a><br><span class="hook">You remember the pen, even though you never meant to.</span></li>
+</ol>
+</nav>
+<p class="last-updated hand">Last updated: <time datetime="2026-11-08">8 November 2026</time></p>
+</main>
+</body>
+</html>

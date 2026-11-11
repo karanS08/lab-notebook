@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entry 010: Teaching 80 people to build a robot · Karan&#x27;s Lab Notebook</title>
+<meta name="description" content="The maps were a mess. It was a great learning experience.">
+<link rel="preload" href="../fonts/caveat-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/notebook.css">
+<script src="../js/sound.js" defer></script>
+<script src="../js/notebook.js" defer></script>
+<script>/* with JS on a web server, open this entry inside the book (add ?plain to stay here) */
+if (location.protocol !== "file:" && !/[?&]plain/.test(location.search)) location.replace("../index.html#entry-010");
+</script>
+</head>
+<body>
+<a class="skip" href="#entry">Skip to entry</a>
+<main class="sheet">
+<p class="crumb"><a href="../index.html#contents">&larr; contents</a></p>
+<nav class="strip" data-strip hidden aria-label="All entries"></nav>
+<article id="entry">
+<p class="date">Plaksha</p>
+<h1>Entry 010: Teaching 80 people to build a robot</h1>
+<p class="part">Part Three: Plaksha</p>
+<p>After my degree, I joined Plaksha University for about a year and a half (three semesters). I worked with Prof. Shashank Tamaskar and was a TA in robotics and automation. It was a place where something happened every day, and I learned something new every day.</p>
+<dl class="log">
+<div><dt>Course</dt><dd>Intelligent Machines. Professors gave the theory lectures, and I ran the labs and seminars, mostly on my own, with PhD students helping.</dd></div>
+</dl>
+<p><b>Weeks 1 to 6, line follower.</b> I sourced the parts from a vendor, built the robot myself, and wrote all the teaching material. I taught around 80 students, in four batches of 20, starting from zero:</p>
+<aside class="margin-note tilt-r">my old arm mistake, now a lesson.</aside>
+<ul>
+<li>what a microcontroller, breadboard and jumper wire are</li>
+<li>how an ESP32 works</li>
+<li>why the ESP32's 3V line can't drive motors, and why motors need their own supply (my old arm mistake, now a lesson)</li>
+<li>the L293D-type motor driver</li>
+<li>differential drive</li>
+</ul>
+<p><b>Weeks 7 to 12, mapping.</b> We used the same chassis, swapped the IR sensors for a VL53L0X time-of-flight sensor (about 1 m range), and taught occupancy grids with a Bayes filter. I built a maze, and students drove the robots wirelessly to map it into a fixed grid.</p>
+<p><b>Result:</b> the maps were a mess. It was a great learning experience, and that includes for me.</p>
+</article>
+<img class="doodle doodle--corner" src="../img/doodles/robot.svg" alt="" width="110" height="128">
+<footer class="page-foot">
+<span class="pageno">page 12 of 23</span>
+<nav aria-label="Turn the page"><a href="009-tiny-satellite.html" rel="prev">&larr; previous page</a> <a href="../index.html#contents">back to contents</a> <a href="011-self-balancing.html" rel="next">next page &rarr;</a></nav>
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# dev tooling
+graphify-out/
+node_modules/
+.vercel/
+# the full three.js build (the site uses the trimmed js/vendor/three-r169-*.min.js)
+js/vendor/three.module.min.js
+.DS_Store
+*.bak

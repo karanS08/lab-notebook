@@ -1,0 +1,12 @@
+# source notes and dev tooling: not part of the site
+graphify-out
+website_goal.md
+entries.md
+img/memories/README.md
+# the full three.js build; the site ships js/vendor/three.desk.min.js
+js/vendor/three.module.min.js
+*.bak
+*.orig
+.DS_Store
+node_modules
+img/shelf/README.md

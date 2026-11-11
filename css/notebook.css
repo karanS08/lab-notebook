@@ -1,0 +1,1299 @@
+/* =========================================================================
+   Karan's Lab Notebook — all styling lives here.
+   Swap --font-hand for a custom handwriting font; swap --paper for tinted
+   paper. Nothing else needs touching.
+   ========================================================================= */
+
+/* ---------- 1. Self-hosted handwriting font ---------- */
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("../fonts/caveat-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("../fonts/caveat-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+/* ---------- 2. Design tokens ---------- */
+:root {
+  /* paper + desk */
+  --paper: #fbf8ef;
+  --desk: #6f6b63;
+  --desk-deep: #5d5951;
+  --rule-ink: #c3cfdc;
+  --margin-ink: #d0564e;
+
+  /* text */
+  --ink: #24221e;
+  --ink-soft: #55504a;
+  --ink-hand: #2b2b2b;
+  --ink-blue: #2a4d8f;
+  --ink-red: #b4322b;
+
+  /* fonts: one-line swaps */
+  --font-hand: "Caveat", "Patrick Hand", "Segoe Script", cursive;
+  --font-body: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+    "Times New Roman", serif;
+
+  /* the baseline grid: ruling interval == body line-height */
+  --rule: 28px;
+  --body-size: 17.5px;
+
+  /* page geometry: A4 at 96dpi, 210 x 297mm -> 794 x 1123 */
+  --page-w: 794px;
+  --sheet-w: min(var(--page-w), calc(100vw - 2 * var(--gutter)));
+  --margin-r: 0.12;     /* red line sits 12% from the left edge */
+  --margin-x: calc(var(--sheet-w) * var(--margin-r));
+  --text-x: calc(var(--margin-x) + 18px);
+  --gutter: 16px;       /* phone side gutter */
+  --pad-y: clamp(16px, 4vw, 48px);
+}
+
+/* ---------- 3. Reset-ish ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+body, body * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+img, svg, video, canvas { -webkit-user-drag: none; }
+
+body {
+  margin: 0;
+  padding: var(--pad-y) var(--gutter);
+  background-color: var(--desk);
+  background-image:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 60%);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: var(--rule);
+  overflow-x: hidden;
+}
+
+img, video, canvas, svg { max-width: 100%; display: block; }
+
+/* ---------- 4. The sheet of paper ---------- */
+.sheet {
+  position: relative;
+  width: var(--sheet-w);
+  min-height: calc(var(--sheet-w) * 1.4142);
+  margin: 0 auto;
+  padding: calc(var(--rule) * 2) 28px calc(var(--rule) * 2) var(--text-x);
+  background-color: var(--paper);
+  /* faint blue-grey ruling, 1px line at the bottom of every --rule band */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--rule) - 1px),
+    var(--rule-ink) calc(var(--rule) - 1px),
+    var(--rule-ink) var(--rule)
+  );
+  background-position: 0 calc(var(--rule) * 2 - 5px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18), 0 6px 18px rgba(0, 0, 0, 0.16);
+  border-radius: 2px;
+  animation: page-in 180ms ease-out both;
+}
+
+/* the single red vertical margin line */
+.sheet::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--margin-x);
+  width: 1px;
+  background: var(--margin-ink);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* wide screens: reserve an outer gutter inside the sheet for margin notes */
+@media (min-width: 900px) {
+  .sheet { padding-right: 150px; }
+}
+
+@media (max-width: 480px) {
+  :root { --rule: 27px; --body-size: 17px; --margin-r: 0.1; }
+  .sheet { padding-left: calc(var(--margin-x) + 10px); padding-right: 14px; }
+}
+
+/* ---------- 5. Handwriting ---------- */
+.hand,
+.date,
+:is(.sheet, .pg) h1,
+:is(.sheet, .pg) h2,
+.margin-note,
+.lesson,
+.caption,
+.pageno,
+.fix,
+.scribble { font-family: var(--font-hand); color: var(--ink-hand); }
+
+.date {
+  display: block;
+  text-align: right;
+  font-size: 23px;
+  line-height: var(--rule);
+  color: var(--ink-blue);
+  margin: 0 0 var(--rule);
+  letter-spacing: 0.01em;
+}
+
+:is(.sheet, .pg) h1 {
+  margin: 0 0 var(--rule);
+  font-size: clamp(27px, 4.4vw, 32px);
+  line-height: calc(var(--rule) * 2);
+  font-weight: 700;
+}
+
+:is(.sheet, .pg) h2 {
+  margin: var(--rule) 0 0;
+  font-size: 25px;
+  line-height: var(--rule);
+  font-weight: 700;
+  color: var(--ink-blue);
+}
+
+:is(.sheet, .pg) p,
+:is(.sheet, .pg) li { line-height: var(--rule); }
+:is(.sheet, .pg) p { margin: 0 0 var(--rule); }
+
+:is(.sheet, .pg) a { color: var(--ink-blue); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+:is(.sheet, .pg) a:hover { color: var(--ink-red); }
+
+:focus-visible {
+  outline: 2px solid var(--ink-red);
+  outline-offset: 2px;
+}
+
+/* ---------- 6. The lab-log block (When / Cost / Built with / ...) ---------- */
+.log {
+  margin: 0 0 var(--rule);
+  padding: 0;
+  font-size: 16.5px;
+}
+.log > div { line-height: var(--rule); }
+.log dt, .log dd { display: inline; }
+.log dt { font-weight: 700; margin: 0 0.4ch 0 0; }
+.log dt::after { content: ":"; }
+.log dd { margin: 0; color: var(--ink-soft); }
+
+/* bullets that still sit on the ruling */
+:is(.sheet, .pg) ul,
+:is(.sheet, .pg) ol { margin: 0 0 var(--rule); padding-left: 1.4em; }
+:is(.sheet, .pg) li { margin: 0; }
+
+.lesson {
+  font-size: 21px;
+  line-height: var(--rule);
+  margin: 0 0 var(--rule);
+  color: var(--ink-red);
+}
+.lesson b { font-weight: 700; }
+
+/* ---------- 7. Human touches: strike-throughs and corrections ---------- */
+.scribble {
+  text-decoration: none;
+  position: relative;
+  color: var(--ink-soft);
+}
+.scribble::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 52%;
+  height: 3px;
+  background:
+    repeating-linear-gradient(
+      -1.5deg,
+      var(--ink-red) 0 7px,
+      transparent 7px 9px
+    );
+  transform: rotate(-0.8deg);
+  pointer-events: none;
+}
+.fix {
+  color: var(--ink-red);
+  font-size: 1.15em;
+  display: inline-block;
+  transform: rotate(-1.4deg);
+}
+
+/* ---------- 8. Margin notes ---------- */
+.margin-note {
+  font-size: 20px;
+  line-height: calc(var(--rule) * 0.85);
+  color: var(--ink-blue);
+  margin: 0 0 var(--rule);
+  padding-left: 1.6em;
+  position: relative;
+}
+.margin-note::before {
+  content: "\2190";           /* arrow back to the text, on phones */
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+@media (min-width: 900px) {
+  /* float out into the 150px gutter the sheet reserves on wide screens */
+  .margin-note {
+    float: right;
+    clear: right;
+    width: 128px;
+    margin: 2px -142px 0 12px;
+    padding-left: 0;
+    transform: rotate(-1.6deg);
+    text-wrap: pretty;
+  }
+  .margin-note::before { content: none; }
+  .margin-note.tilt-r { transform: rotate(1.8deg); }
+}
+
+/* ---------- 9. Taped-in media ---------- */
+.taped {
+  margin: var(--rule) auto;
+  width: min(420px, 100%);
+  position: relative;
+  transform: rotate(-1.4deg);
+}
+.taped:nth-of-type(even) { transform: rotate(1.6deg); }
+
+.taped .frame {
+  position: relative;
+  background: #efeade;
+  padding: 7px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+.taped .frame::before,
+.taped .frame::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 54px;
+  height: 22px;
+  background: rgba(226, 220, 196, 0.62);
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+.taped .frame::before { left: -14px; transform: rotate(-26deg); }
+.taped .frame::after { right: -14px; transform: rotate(24deg); }
+
+.taped img,
+.taped video { width: 100%; height: auto; background: #ddd8cc; }
+
+/* empty slot: "[photo coming]" */
+.taped .blank {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  background:
+    repeating-linear-gradient(45deg, #e7e2d4 0 10px, #e2dccd 10px 20px);
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: #8d867a;
+  text-align: center;
+  padding: 1em;
+}
+
+.caption {
+  font-size: 20px;
+  line-height: calc(var(--rule) * 0.9);
+  margin-top: 6px;
+  color: var(--ink-hand);
+  text-align: center;
+}
+
+/* ---------- 10. Doodles ---------- */
+.doodle {
+  position: absolute;
+  opacity: 0.85;
+  pointer-events: none;
+  width: 110px;
+}
+.doodle--corner { right: 18px; bottom: 96px; transform: rotate(5deg); }
+.doodle--foot { left: 50%; bottom: 20px; transform: translateX(-50%) rotate(-2deg); }
+@media (max-width: 600px) { .doodle { width: 82px; opacity: 0.7; } }
+
+/* ---------- 11. Three.js sketch holders ---------- */
+.sketch {
+  position: relative;
+  margin: var(--rule) auto;
+  width: min(320px, 100%);
+}
+.sketch canvas { width: 100%; height: auto; touch-action: none; }
+.sketch .fallback { width: 100%; height: auto; }
+.sketch[data-live="1"] .fallback { display: none; }
+.sketch .readout {
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--ink-blue);
+  line-height: calc(var(--rule) * 0.85);
+}
+.sketch .btn {
+  font-family: var(--font-hand);
+  font-size: 20px;
+  background: none;
+  border: 1px solid var(--ink-blue);
+  border-radius: 2px;
+  color: var(--ink-blue);
+  padding: 1px 10px;
+  cursor: pointer;
+}
+.sketch .btn:hover { background: rgba(42, 77, 143, 0.08); }
+
+/* ---------- 12. Footer: page number + prev/next ---------- */
+.page-foot {
+  margin-top: calc(var(--rule) * 2);
+  padding-top: calc(var(--rule) * 0.5 - 1px);
+  border-top: 1px dashed rgba(36, 34, 30, 0.22);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 16px;
+}
+.pageno { font-size: 20px; color: var(--ink-soft); }
+.page-foot nav { display: flex; gap: 18px; flex-wrap: wrap; }
+.page-foot .dim { color: var(--ink-soft); opacity: 0.6; }
+
+/* ---------- 13. Contents page: the timeline ---------- */
+.cover-title {
+  font-family: var(--font-hand);
+  font-size: clamp(38px, 8vw, 58px);
+  line-height: calc(var(--rule) * 2);
+  margin: 0;
+  font-weight: 700;
+}
+.cover-sub {
+  font-family: var(--font-hand);
+  font-size: 23px;
+  line-height: var(--rule);
+  color: var(--ink-blue);
+  margin: 0 0 var(--rule);
+}
+.cover-note {
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin: 0 0 var(--rule);
+}
+
+.part {
+  font-family: var(--font-hand);
+  font-size: 26px;
+  line-height: var(--rule);
+  margin: var(--rule) 0 0;
+  color: var(--ink-red);
+}
+
+.timeline { list-style: none; margin: 0; padding: 0 0 0 20px; position: relative; }
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  bottom: 10px;
+  border-left: 1px dotted rgba(36, 34, 30, 0.45);
+}
+.timeline li { position: relative; padding: 0 0 var(--rule); }
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: calc(var(--rule) / 2 - 2px);
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+}
+/* bigger time gaps get more air */
+.timeline li.gap-1 { padding-bottom: calc(var(--rule) * 2); }
+.timeline li.gap-2 { padding-bottom: calc(var(--rule) * 3); }
+
+.timeline .when {
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--ink-blue);
+  display: block;
+  line-height: var(--rule);
+}
+.timeline .what { font-weight: 600; }
+.timeline .hook { color: var(--ink-soft); font-size: 16px; }
+
+/* ---------- 14. Entry pages: slim timeline strip ---------- */
+.strip {
+  display: flex;
+  height: var(--rule);
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 var(--rule);
+  flex-wrap: wrap;
+}
+.strip a {
+  width: 9px;
+  height: 9px;
+  border: 1px solid rgba(36, 34, 30, 0.5);
+  border-radius: 50%;
+  display: block;
+  text-decoration: none;
+}
+.strip a[aria-current="page"] {
+  background: var(--ink-red);
+  border-color: var(--ink-red);
+  transform: scale(1.35);
+}
+.strip .lbl {
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--ink-soft);
+  margin-left: 6px;
+}
+@media (max-width: 700px) { .strip { display: none; } }
+
+.crumb {
+  font-size: 16px;
+  margin: 0;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+.skip:focus {
+  left: 8px;
+  top: 8px;
+  background: var(--paper);
+  padding: 6px 10px;
+  z-index: 10;
+}
+
+/* ---------- 15. Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  .sheet { animation: none; }
+}
+
+/* ---------- 16. Print: one entry per A4 sheet ---------- */
+@media print {
+  @page { size: A4; margin: 14mm; }
+  body { background: none; padding: 0; color: #000; }
+  .sheet {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0 0 0 12mm;
+    box-shadow: none;
+    background-image: none;
+    background-color: transparent;
+    animation: none;
+  }
+  .sheet::before { left: 0; }
+  :root { --sheet-w: 100%; }
+  .page-foot nav,
+  .strip,
+  .skip,
+  .doodle,
+  .sketch canvas { display: none; }
+  .margin-note { float: none; width: auto; margin: 0 0 8px; transform: none; padding-left: 1.6em; }
+  .taped { transform: none; page-break-inside: avoid; }
+  a { color: #000; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
+}
+
+/* ---------- 17. Additions: pairs of clips, lessons, cover bits ---------- */
+.tape-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 24px;
+  margin: calc(var(--rule) * 0.5) 0;
+}
+.tape-row .taped { width: min(230px, 100%); margin: var(--rule) 0; }
+.taped .blank.portrait { aspect-ratio: 9 / 14; }
+
+.lessons { list-style: none; padding-left: 0; }
+.lessons li {
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: var(--ink-red);
+  padding-left: 1.2em;
+  position: relative;
+}
+.lessons li::before { content: "\2192"; position: absolute; left: 0; }
+
+:is(.sheet, .pg) .cover-title {
+  font-size: clamp(40px, 8vw, 60px);
+  line-height: calc(var(--rule) * 2);
+}
+.cover .sketch { width: min(300px, 80%); margin-top: var(--rule); }
+.owner { font-size: 22px; color: var(--ink-blue); margin: 0; }
+.links { font-size: 16px; }
+.last-updated {
+  font-size: 20px;
+  color: var(--ink-soft);
+  margin: calc(var(--rule) * 2) 0 0;
+  text-align: right;
+}
+
+@media (max-width: 899px) {
+  .doodle--corner {
+    position: static;
+    display: block;
+    margin: 0 0 0 auto;
+    transform: rotate(5deg);
+  }
+}
+
+/* =========================================================================
+   18. Cover intro: the notebook lies on a desk, the camera pushes in, the
+   cover swings open, and the first page becomes the real page. Only runs
+   when JS adds .intro-on to <html> (not with reduced motion, not in print).
+   ========================================================================= */
+@font-face {
+  font-family: "Anton";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/anton-latin.woff2") format("woff2");
+}
+:root { --font-title: "Anton", "Impact", "Arial Narrow Bold", sans-serif; }
+
+.intro, .skip-intro { display: none; }
+
+.book-on,
+.book-on body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+.book-on body { padding: 0; touch-action: none; }
+.book-on main.cover { display: none; }
+.book-on .intro { display: block; position: fixed; inset: 0; z-index: 5; }
+
+.intro-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 5;
+  perspective: 1500px;
+  perspective-origin: 50% 40%;
+  background: var(--desk);
+  /* worn desk: soft grain + a lamp pool */
+  background-image:
+    radial-gradient(ellipse 60% 55% at 52% 48%, rgba(255, 236, 196, 0.28), transparent 70%),
+    repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.035) 0 2px, transparent 2px 9px),
+    repeating-linear-gradient(88deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 13px);
+  will-change: opacity;
+}
+/* vignette */
+.intro-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 85% 80% at 50% 50%, transparent 45%, rgba(10, 8, 6, 0.65) 100%);
+  pointer-events: none;
+  opacity: var(--vig, 1);
+}
+
+/* letterbox bars */
+.bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 10vh;
+  background: #0b0a09;
+  z-index: 3;
+  transform-origin: top;
+}
+.bar.top { top: 0; }
+.bar.bot { bottom: 0; transform-origin: bottom; }
+
+/* camera rig: JS writes the transform */
+.cam {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--pw, 360px);
+  height: var(--ph, 509px);
+  transform-style: preserve-3d;
+}
+.book {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: bob 6s ease-in-out infinite;
+}
+.intro-stage.moving .book,
+.intro-stage.reading .book { animation: none; }
+@keyframes bob {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -7px, 0) rotate(0.5deg); }
+}
+
+/* back board + page block */
+.book .board,
+.book .leaf,
+.cover-front,
+.cover-inside {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px 7px 7px 2px;
+}
+.book .board {
+  background: #1b2633;
+  transform: translateZ(-16px);
+  box-shadow: 0 40px 70px rgba(0, 0, 0, 0.55), 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+.book .edge {
+  position: absolute;
+  background: repeating-linear-gradient(90deg, #efe9da 0 1px, #d9d1bd 1px 2px);
+}
+.book .edge-r {
+  top: 3px; bottom: 3px; right: 0; width: 16px;
+  transform-origin: right center;
+  transform: rotateY(-90deg);
+  background: repeating-linear-gradient(90deg, #f2ecdd 0 1px, #d6ceb9 1px 2px);
+}
+.book .edge-b,
+.book .edge-t {
+  left: 2px; right: 3px; height: 16px;
+  background: repeating-linear-gradient(0deg, #f2ecdd 0 1px, #d6ceb9 1px 2px);
+}
+.book .edge-b { bottom: 0; transform-origin: center bottom; transform: rotateX(90deg); }
+.book .edge-t { top: 0; transform-origin: center top; transform: rotateX(-90deg); }
+
+/* the first page: same paper + ruling as the real sheet, scaled to land on it */
+.book .leaf {
+  border-radius: 1px;
+  background-color: var(--paper);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--leaf-rule, 14px) - var(--leaf-px, 0.6px)),
+    var(--rule-ink) calc(var(--leaf-rule, 14px) - var(--leaf-px, 0.6px)),
+    var(--rule-ink) var(--leaf-rule, 14px)
+  );
+  background-position: 0 var(--leaf-off, 25px);
+  transform: translateZ(0.5px);
+}
+.book .leaf::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--margin-r) * 100%);
+  width: var(--leaf-px, 0.6px);
+  background: var(--margin-ink);
+  opacity: 0.75;
+}
+
+/* the cover: hinged on the left edge, two faces */
+.bcover {
+  position: absolute;
+  inset: -3px -4px -3px 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transform: translateZ(2px) rotateY(var(--open, 0deg));
+  will-change: transform;
+}
+.cover-front,
+.cover-inside { backface-visibility: hidden; overflow: hidden; }
+.cover-front {
+  background-color: #22344a;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.09) 0 1px, transparent 1px 4px),
+    radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.1), transparent 60%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset -6px 0 14px rgba(0, 0, 0, 0.25);
+  color: #f3eee2;
+}
+.cover-front .spine {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 9%;
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.08);
+}
+.cover-front .label {
+  position: absolute;
+  left: 20%; right: 12%; top: 16%;
+  padding: 6% 7%;
+  background: #f4efe1;
+  color: #23211d;
+  transform: rotate(-2deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  font-family: var(--font-hand);
+  line-height: 1.05;
+}
+.cover-front .label::before {
+  content: "";
+  position: absolute;
+  top: -8%; left: 38%;
+  width: 26%; height: 18%;
+  background: rgba(226, 220, 196, 0.7);
+  transform: rotate(3deg);
+}
+.cover-front .l1 { display: block; font-size: calc(var(--bw, 360px) * 0.07); color: var(--ink-blue); }
+.cover-front .l2 { display: block; font-size: calc(var(--bw, 360px) * 0.105); font-weight: 700; }
+.cover-front .l3 { display: block; font-size: calc(var(--bw, 360px) * 0.05); color: #6b655b; margin-top: 4%; }
+.cover-front .sticker {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-family: var(--font-title);
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+}
+.cover-front .warn {
+  right: 10%; bottom: 14%;
+  width: 26%; aspect-ratio: 1;
+  border-radius: 50%;
+  background: #e2b13c;
+  color: #1c1a17;
+  font-size: calc(var(--bw, 360px) * 0.034);
+  line-height: 1.1;
+  transform: rotate(12deg);
+  border: 2px solid #1c1a17;
+}
+.cover-front .bot {
+  left: 20%; bottom: 10%;
+  width: 22%;
+  padding: 2%;
+  background: #f4efe1;
+  border-radius: 6px;
+  transform: rotate(-7deg);
+}
+.cover-front .stamp {
+  position: absolute;
+  left: 22%; top: 56%;
+  font-family: var(--font-title);
+  font-size: calc(var(--bw, 360px) * 0.05);
+  letter-spacing: 0.12em;
+  color: #c9483f;
+  border: 2px solid #c9483f;
+  padding: 0 3%;
+  transform: rotate(-9deg);
+  opacity: 0.85;
+  mix-blend-mode: screen;
+}
+.cover-inside {
+  transform: rotateY(180deg);
+  background: #efe9da;
+  background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.025) 0 1px, transparent 1px 5px);
+  box-shadow: inset 6px 0 14px rgba(0, 0, 0, 0.18);
+  display: grid;
+  place-items: center;
+}
+.cover-inside p {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: calc(var(--bw, 360px) * 0.06);
+  line-height: 1.3;
+  color: var(--ink-blue);
+  text-align: center;
+  transform: rotate(-3deg);
+}
+
+/* GTA-style title card + loading tip */
+.card {
+  position: absolute;
+  left: clamp(18px, 6vw, 90px);
+  bottom: calc(10vh + clamp(18px, 5vh, 56px));
+  z-index: 4;
+  color: #fff;
+  pointer-events: none;
+}
+.card-kicker {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: clamp(22px, 3vw, 30px);
+  color: #f1d48a;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  transform: rotate(-2deg);
+  transform-origin: left;
+}
+.card-title {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: clamp(46px, 9vw, 116px);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #fbf6ea;
+  -webkit-text-stroke: 1.5px #0d0c0b;
+  paint-order: stroke fill;
+  text-shadow: 3px 4px 0 #0d0c0b, 0 12px 30px rgba(0, 0, 0, 0.6);
+  transform: skewX(-6deg);
+  transform-origin: left;
+}
+.card-title span { color: #e2b13c; }
+
+.tip {
+  position: absolute;
+  left: 50%;
+  bottom: 2.6vh;
+  transform: translateX(-50%);
+  z-index: 4;
+  margin: 0;
+  width: min(92vw, 640px);
+  text-align: center;
+  font-size: clamp(14px, 1.6vw, 16px);
+  color: #e9e3d6;
+  line-height: 1.4;
+}
+.tip b {
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: #e2b13c;
+  margin-right: 0.6ch;
+}
+.tip span { transition: opacity 300ms; }
+.hint {
+  position: absolute;
+  right: clamp(18px, 5vw, 70px);
+  bottom: calc(10vh + 18px);
+  z-index: 4;
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 24px;
+  color: #fbf6ea;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+.hint span { display: inline-block; animation: nudge 1.4s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateY(6px); } }
+
+.book-on .skip-intro {
+  display: block;
+  position: fixed;
+  top: calc(10vh + 14px);
+  right: clamp(14px, 4vw, 40px);
+  z-index: 6;
+  font-family: var(--font-title);
+  letter-spacing: 0.12em;
+  font-size: 14px;
+  color: #e9e3d6;
+  text-decoration: none;
+  border: 1px solid rgba(233, 227, 214, 0.45);
+  padding: 3px 10px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.book-on .skip-intro:hover { color: #fff; border-color: #fff; }
+.skip-intro.gone { visibility: hidden; }
+
+@media (max-width: 600px) {
+  .card { bottom: calc(10vh + 64px); }
+  .hint { right: auto; left: clamp(18px, 6vw, 90px); bottom: calc(10vh + 16px); font-size: 22px; }
+}
+@media print {
+  .intro, .skip-intro, .reader-bar { display: none !important; }
+  .book-on, .book-on body { height: auto; overflow: visible; }
+  .book-on main.cover { display: block; }
+}
+main.sheet:focus { outline: none; }
+
+/* ---------- 19. Page turns + sound toggle ---------- */
+.sheet.turn-next {
+  transform-origin: left center;
+  animation: turn-next 340ms cubic-bezier(0.5, 0, 0.75, 0.4) forwards;
+}
+.sheet.turn-prev {
+  transform-origin: right center;
+  animation: turn-prev 340ms cubic-bezier(0.5, 0, 0.75, 0.4) forwards;
+}
+@keyframes turn-next {
+  to { transform: perspective(1800px) rotateY(-88deg); opacity: 0.2; box-shadow: 40px 0 60px rgba(0, 0, 0, 0.35); }
+}
+@keyframes turn-prev {
+  to { transform: perspective(1800px) rotateY(88deg); opacity: 0.2; box-shadow: -40px 0 60px rgba(0, 0, 0, 0.35); }
+}
+
+.sound-toggle {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 7;
+  font-family: var(--font-hand);
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--paper);
+  background: rgba(20, 18, 16, 0.55);
+  border: 1px solid rgba(251, 248, 239, 0.35);
+  border-radius: 2px;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+.sound-toggle:hover { background: rgba(20, 18, 16, 0.75); }
+.sound-toggle[aria-pressed="false"] { opacity: 0.6; }
+@media print { .sound-toggle { display: none; } }
+
+/* =========================================================================
+   20. Book reader: the open notebook. Pages are fixed-size sheets; an
+   entry's text flows across as many pages as it needs (CSS columns), and
+   one leaf turns over the spine at a time.
+   ========================================================================= */
+.slot-r,
+.slot-l,
+.flipper,
+.flipper > .face {
+  position: absolute;
+  inset: 0;
+}
+.slot-r { transform: translateZ(0.5px); }
+.slot-l { transform: translateX(-100%) translateZ(3px); display: none; }
+.slot-l.on { display: block; }
+.flipper {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transform: translateZ(5px);
+  display: none;
+}
+.flipper.on { display: block; }
+.flipper > .face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flipper > .face.back { transform: rotateY(180deg); }
+/* light falling across the turning leaf */
+.flipper > .face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0) 35%, rgba(255, 255, 255, 0.12) 70%, rgba(0, 0, 0, 0.08));
+  opacity: 0;
+  animation: leaf-light var(--flip-ms, 720ms) ease-in-out;
+}
+@keyframes leaf-light { 50% { opacity: 1; } }
+.flipper.fwd { animation: leaf-fwd var(--flip-ms, 720ms) cubic-bezier(0.45, 0.05, 0.3, 1) forwards; }
+.flipper.bwd { animation: leaf-bwd var(--flip-ms, 720ms) cubic-bezier(0.45, 0.05, 0.3, 1) forwards; }
+@keyframes leaf-fwd {
+  0% { transform: translateZ(5px) rotateY(0deg); }
+  50% { transform: translateZ(40px) rotateY(-90deg) skewY(-2deg); }
+  100% { transform: translateZ(5px) rotateY(-180deg); }
+}
+@keyframes leaf-bwd {
+  0% { transform: translateZ(5px) rotateY(-180deg); }
+  50% { transform: translateZ(40px) rotateY(-90deg) skewY(2deg); }
+  100% { transform: translateZ(5px) rotateY(0deg); }
+}
+
+/* one page of paper */
+.pg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: var(--paper);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--rule) - 1px),
+    var(--rule-ink) calc(var(--rule) - 1px),
+    var(--rule-ink) var(--rule)
+  );
+  background-position: 0 calc(var(--pad-t) - 5px);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: var(--rule);
+  border-radius: 1px 4px 4px 1px;
+}
+.pg::before {                     /* red margin line */
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--mx);
+  width: 1px;
+  background: var(--margin-ink);
+  opacity: 0.75;
+}
+.pg::after {                      /* shade near the spine */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(60, 45, 20, 0.16), rgba(60, 45, 20, 0) 7%);
+}
+.pg.back { transform: none; border-radius: 4px 1px 1px 4px; }
+.pg.back::after { background: linear-gradient(270deg, rgba(60, 45, 20, 0.18), rgba(60, 45, 20, 0) 8%); }
+.pg.back::before { left: auto; right: var(--mx); }
+/* ink showing through from the other side of the leaf */
+.pg .bleed {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(-1);
+  opacity: 0.07;
+  filter: blur(0.4px);
+  pointer-events: none;
+}
+.pg-win {
+  position: absolute;
+  left: var(--pl);
+  top: var(--pad-t);
+  width: var(--win-w);
+  height: var(--ch);
+  overflow: hidden;
+}
+.flow {
+  width: var(--cw);
+  height: var(--ch);
+  column-count: 1;
+  column-gap: var(--gap);
+  column-fill: auto;
+  position: relative;
+}
+.flow > :first-child { margin-top: 0; }
+.flow .taped,
+.flow .tape-row,
+.flow .sketch,
+.flow .log,
+.flow h2,
+.flow .lessons li { break-inside: avoid; }
+.flow h2 { break-after: avoid; }
+.flow .doodle { position: static; display: block; margin: 0 0 0 auto; width: 96px; transform: rotate(5deg); }
+.flow .taped { max-width: 100%; }
+.flow .strip, .flow .crumb { display: none; }
+
+/* margin notes: out in the gutter on roomy pages, inline on small ones */
+.pg .margin-note { float: none; width: auto; margin: 0 0 var(--rule); transform: none; padding-left: 1.6em; }
+.pg .margin-note::before { content: "\2190"; }
+.pg.wide .margin-note {
+  float: right;
+  clear: right;
+  width: calc(var(--gut) - 26px);
+  margin: 2px calc(12px - var(--gut)) 0 12px;
+  padding-left: 0;
+  transform: rotate(-1.6deg);
+}
+.pg.wide .margin-note::before { content: none; }
+
+.pg-no {
+  position: absolute;
+  bottom: calc(var(--rule) * 0.55);
+  right: 22px;
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--ink-soft);
+}
+.pg.back .pg-no { display: none; }
+.pg-run {
+  position: absolute;
+  top: calc(var(--rule) * 0.6);
+  right: 22px;
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--ink-blue);
+  opacity: 0.8;
+}
+.pg-measure {
+  position: absolute;
+  left: -100000px;
+  top: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* reader controls */
+.reader-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  z-index: 7;
+  display: none;
+  gap: 4px;
+  align-items: center;
+  background: rgba(20, 18, 16, 0.55);
+  border: 1px solid rgba(251, 248, 239, 0.25);
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--paper);
+  white-space: nowrap;
+}
+.reading .reader-bar,
+.book-on.reading .reader-bar { display: flex; }
+.reader-bar button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+.reader-bar button:hover { color: #f1d48a; }
+.reader-bar button:disabled { opacity: 0.35; cursor: default; }
+.reader-bar .count { padding: 0 6px; min-width: 7.5em; text-align: center; opacity: 0.85; }
+.read-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 56px;
+  transform: translateX(-50%);
+  z-index: 6;
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: #fbf6ea;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms;
+}
+.read-hint.show { opacity: 1; }
+
+/* contents inside the book: tighter rows, never split a row across pages */
+.flow .timeline li { padding-bottom: 0; break-inside: avoid; }
+.flow .timeline li.gap-1,
+.flow .timeline li.gap-2 { padding-bottom: var(--rule); }
+.flow .part { break-after: avoid; }
+.flow .cover-title { margin-top: 0; }
+.flow .sketch { width: min(230px, 70%); }
+.reader-bar .sound-toggle {
+  position: static;
+  background: none;
+  border: 0;
+  border-left: 1px solid rgba(251, 248, 239, 0.25);
+  border-radius: 0;
+  margin-left: 4px;
+  padding: 2px 8px 2px 12px;
+  font-size: inherit;
+  color: inherit;
+}
+.reader-bar .sound-toggle:hover { background: none; color: #f1d48a; }
+@media (max-width: 480px) { .reader-bar .count { min-width: 0; } .reader-bar { font-size: 18px; } }
+
+/* ---------- 21. Sketch controls, todo links, the margin robot ---------- */
+.sketch canvas { cursor: crosshair; }
+.sketch[data-sketch="arm"] canvas { cursor: default; }
+.sketch:focus { outline: none; }
+.sketch:focus-visible { outline: 1px dashed var(--ink-blue); outline-offset: 4px; }
+.sk-ui {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 12px;
+  min-height: var(--rule);
+  line-height: var(--rule);
+}
+.sk-ui .readout b { font-weight: 400; color: var(--ink-hand); display: inline-block; min-width: 2.6em; text-align: right; }
+.sk-ui .prompt {
+  font-family: var(--font-hand);
+  font-size: 21px;
+  color: var(--ink-red);
+  width: 100%;
+  text-align: center;
+}
+.sk-ui .btn { line-height: 1.2; margin: 3px 0; }
+.sketch[data-live="1"] .sk-ui { display: flex; }
+.sketch:not([data-live="1"]) .sk-ui { display: none; }
+.todo { font-family: var(--font-hand); font-size: 20px; color: var(--ink-soft); }
+
+.walker {
+  position: absolute;
+  bottom: calc(var(--rule) * 1.4);
+  left: 0;
+  width: 46px;
+  z-index: 3;
+  pointer-events: none;
+  animation: walker-x 9s linear forwards;
+}
+.walker .body {
+  transform-origin: 30% 100%;
+  animation: walker-fall 9s ease-in-out forwards;
+}
+.walker img { width: 46px; animation: walker-step 0.42s ease-in-out infinite; }
+.walker .oops {
+  position: absolute;
+  left: -14px;
+  top: -26px;
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--ink-red);
+  opacity: 0;
+  animation: walker-oops 9s linear forwards;
+}
+@keyframes walker-x {
+  0% { transform: translateX(var(--w-from)); }
+  42% { transform: translateX(var(--w-trip)); }
+  74% { transform: translateX(var(--w-trip)); }
+  100% { transform: translateX(-90px); }
+}
+@keyframes walker-fall {
+  0%, 41% { transform: rotate(0deg); }
+  46% { transform: rotate(-84deg) translateY(4px); }
+  62% { transform: rotate(-84deg) translateY(4px); }
+  66% { transform: rotate(-40deg); }
+  70%, 100% { transform: rotate(0deg); }
+}
+@keyframes walker-step {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-3px) rotate(4deg); }
+}
+@keyframes walker-oops { 0%, 44% { opacity: 0; } 47%, 64% { opacity: 1; } 67%, 100% { opacity: 0; } }
+/* interactive sketches: room for their controls is reserved up front */
+.flow .sketch:not([data-sketch="arm"]) { width: min(320px, 100%); }
+.sketch[data-sketch]:not([data-sketch="arm"]):not([data-live="1"]) .fallback { margin-bottom: calc(var(--rule) * 2); }
+.sketch[data-sketch="pen"]:not([data-live="1"]) .fallback { margin-bottom: calc(var(--rule) * 3); }
+/* 3D hit-testing through a flipped cover is unreliable: only the page
+   you're reading takes the pointer */
+.book, .book * { pointer-events: none; }
+.slot-r, .slot-r * { pointer-events: auto; }
+/* in the book, keep each photo's tape inside its own box so it can't
+   peek onto the previous page */
+.flow .taped { padding-top: 12px; }
+.flow .tape-row .taped { padding-top: 12px; }
+
+/* reading: back to the desk (Esc does the same) */
+.to-desk { display: none; }
+.book-on.reading .to-desk {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: fixed;
+  top: 12px;
+  left: clamp(12px, 2vw, 28px);
+  z-index: 7;
+  padding: 4px 12px 5px 6px;
+  font: 20px/1 var(--font-hand);
+  color: var(--paper);
+  background: rgba(20, 18, 16, 0.55);
+  border: 1px solid rgba(251, 248, 239, 0.25);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.book-on.reading .to-desk:hover { color: #f1d48a; border-color: rgba(251, 248, 239, 0.5); }
+.to-desk kbd {
+  font: 600 12px/1 system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 6px;
+  border: 1px solid rgba(251, 248, 239, 0.5);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+}
+/* phones: no Esc key, and the page fills the screen, so just a small tab in the corner */
+@media (max-width: 600px) {
+  .book-on.reading .to-desk { top: 6px; left: 6px; padding: 3px 8px 4px; font-size: 16px; gap: 0; opacity: 0.85; }
+  .to-desk kbd { display: none; }
+  .book-on.reading .to-desk::before { content: "\2190\00a0"; }
+}

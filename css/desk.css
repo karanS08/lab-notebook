@@ -1,0 +1,160 @@
+/* Karan's desk (js/desk.js): a three.js scene drawn behind the notebook. */
+
+.intro-stage { background: #24211d; }
+.night .intro-stage { background: #0b0a09; }
+/* the notebook lies on the desk: no floating */
+.book-on:not(.desk-flat) .book { animation: none; }
+/* no WebGL: a plain green cutting mat */
+.desk-flat .intro-stage {
+  background-color: #2f6d53;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.22) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.desk-gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.desk-gl.on { opacity: 1; }
+/* first appearance: the room fades in from the notebook outwards. The mask
+   is dropped once it's done (.revealed) so it costs nothing afterwards. */
+@property --reveal { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+.desk-gl.on:not(.revealed) {
+  transition: none;
+  -webkit-mask-image: radial-gradient(circle at var(--rx, 50%) var(--ry, 55%), #000 calc(var(--reveal) - 18%), transparent var(--reveal));
+  mask-image: radial-gradient(circle at var(--rx, 50%) var(--ry, 55%), #000 calc(var(--reveal) - 18%), transparent var(--reveal));
+  animation: desk-reveal 1.6s cubic-bezier(0.25, 0.6, 0.3, 1) forwards;
+}
+@keyframes desk-reveal { from { --reveal: 0%; } to { --reveal: 125%; } }
+.still .desk-gl.on:not(.revealed) { animation: none; -webkit-mask-image: none; mask-image: none; }
+
+/* hover label */
+.desk-tip {
+  position: fixed;
+  z-index: 8;
+  left: 0;
+  top: 0;
+  padding: 3px 10px 4px;
+  font: 20px/1.2 var(--font-hand);
+  color: #2b2b2b;
+  background: #fbf8ef;
+  border-radius: 3px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -100%) rotate(-1.5deg);
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.desk-tip.on { opacity: 1; }
+.desk-tip b { color: var(--ink-blue); font-weight: 400; }
+.intro-stage.reading .desk-tip { display: none; }
+
+/* the terminal's real input lives off screen; the monitor draws what you type */
+.desk-input {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 10px;
+  opacity: 0;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* "refill?" over the empty coffee */
+.desk-bubble {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  margin: -30px 0 0 -30px;
+  font: 26px/1 var(--font-hand);
+  color: #fbf8ef;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.desk-bubble.on { opacity: 1; }
+.intro-stage.reading .desk-bubble { display: none; }
+
+/* desktop: a title that leaves room for the desk */
+@media (min-width: 900px) {
+  .book-on:not(.desk-flat) .card-title { font-size: var(--ts, clamp(46px, min(7.4vw, 11.5vh), 112px)); }
+  .book-on:not(.desk-flat) .card-kicker { font-size: max(18px, calc(var(--ts, 104px) * 0.27)); }
+}
+
+/* narrower windows: the title rides in the top letterbox bar, on one line */
+.card.in-bar { display: flex; flex-direction: row-reverse; justify-content: flex-end; align-items: center; gap: 22px; }
+.card.in-bar .card-title br { display: none; }
+.card.in-bar .card-title span { margin-left: 0.25em; }
+.card.in-bar .card-title { text-shadow: 2px 3px 0 #000; -webkit-text-stroke: 0; }
+.card.in-bar .card-kicker { font-size: max(16px, calc(var(--ts) * 0.42)); white-space: nowrap; }
+
+/* keyboard close-up: the HTML notebook steps aside (a 3D one stands in) */
+.intro-stage.desk-zoom .cam,
+.intro-stage.desk-zoom .card, .intro-stage.desk-zoom .hint, .intro-stage.desk-zoom .tip,
+html:has(.desk-zoom) .skip-intro { visibility: hidden; pointer-events: none; }
+.desk-back {
+  position: absolute;
+  z-index: 9;
+  left: 50%;
+  bottom: calc(5vh - 19px);
+  transform: translateX(-50%);
+  padding: 7px 16px 8px;
+  font: 22px/1 var(--font-hand);
+  color: #fbf8ef;
+  background: none;
+  border: 1px solid rgba(251, 248, 239, 0.5);
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.desk-back kbd { font: 13px/1 system-ui, sans-serif; opacity: 0.7; margin-left: 6px; padding: 2px 5px; border: 1px solid rgba(251, 248, 239, 0.4); border-radius: 3px; }
+.desk-back:hover { border-color: #fbf8ef; }
+.desk-zoom .desk-back { opacity: 1; pointer-events: auto; }
+
+/* the closed notebook opens on click */
+.intro-stage.over-book { cursor: pointer !important; }
+
+/* the speaker's Spotify card */
+.desk-player {
+  position: fixed;
+  right: 20px;
+  bottom: calc(10vh + 14px);
+  width: min(340px, calc(100vw - 32px));
+  z-index: 30;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.desk-player.on { opacity: 1; transform: none; pointer-events: auto; }
+.desk-player-slot { border-radius: 12px; overflow: hidden; min-height: 80px; background: #181818; }
+.desk-player-slot iframe { display: block; border: 0; }
+.desk-player-x {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #24211d;
+  color: #f3efe4;
+  font-size: 16px;
+  line-height: 22px;
+  cursor: pointer;
+  z-index: 1;
+}

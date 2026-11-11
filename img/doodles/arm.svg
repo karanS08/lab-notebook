@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".88">
+  <title>Pencil sketch of the hot-glue arm: a base, two stacked servos, two ruler links and an ice-cream-stick gripper, leaning to the right</title>
+  <!-- base plate -->
+  <path d="M70 262 L230 262 L250 248 L92 248 Z"/><path d="M70 262 L70 268 L230 268 L230 262 M230 268 L250 254 L250 248"/>
+  <!-- yaw servo -->
+  <path d="M128 248 L128 218 L172 218 L172 248 M128 218 L138 211 L182 211 L182 241 L172 248 M172 218 L182 211"/>
+  <!-- shoulder servo -->
+  <path d="M134 211 L134 190 L166 190 L166 211 M134 190 L142 184 L174 184 L174 205"/>
+  <!-- upper arm (ruler) leaning right -->
+  <path d="M146 188 L188 104 L198 108 L156 192 Z"/>
+  <path d="M160 160 l5 2 M168 144 l5 2 M176 128 l5 2" stroke-width="1.2"/>
+  <!-- elbow servo -->
+  <path d="M182 112 L188 92 L212 98 L206 118 Z M188 92 L196 86 L220 92 L212 98"/>
+  <!-- forearm -->
+  <path d="M206 98 L254 64 L259 72 L211 106 Z"/>
+  <!-- gripper sticks -->
+  <path d="M256 66 L278 44 L282 50 M258 72 L286 60 L284 67" stroke="#2a4d8f"/>
+  <!-- hot glue blobs -->
+  <path d="M126 236 c-6 0 -6 7 0 7 c4 0 5 -6 0 -7 Z M176 200 c-5 0 -5 6 0 6 c4 0 4 -5 0 -6 Z" stroke-width="1.2" opacity=".55"/>
+</svg>
